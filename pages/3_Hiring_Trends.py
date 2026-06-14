@@ -7,7 +7,7 @@ connection = psycopg2.connect(
     host="localhost",
     database="job_market_db",
     user="postgres",
-    password="123raju"
+    password="DB_password" #U r password
 )
 
 df = pd.read_sql(

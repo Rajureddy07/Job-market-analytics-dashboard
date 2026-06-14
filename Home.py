@@ -9,7 +9,7 @@ connection = psycopg2.connect(
     host="localhost",
     database="job_market_db",
     user="postgres",
-    password="123raju"
+    password="DB_Password"  #Replace with your database password
 )
 
 # LOAD DATA FROM POSTGRESQL
