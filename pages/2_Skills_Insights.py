@@ -1,38 +1,40 @@
-import streamlit as st
 import pandas as pd
-import psycopg2
+import streamlit as st
 import plotly.express as px
 
-connection = psycopg2.connect(
-    host="localhost",
-    database="job_market_db",
-    user="postgres",
-    password="DB_Password" #u r DB password
-)
+from database import load_jobs, show_database_error
 
-df = pd.read_sql(
-    "SELECT * FROM jobs",
-    connection
-)
+st.set_page_config(page_title="Skills Insights", page_icon="🧠", layout="wide")
+st.title("Skills Insights")
 
-skills = {
-    "Python": df["skills_python"].sum(),
-    "SQL": df["skills_sql"].sum(),
-    "ML": df["skills_ml"].sum(),
-    "Deep Learning": df["skills_deep_learning"].sum(),
-    "Cloud": df["skills_cloud"].sum()
+try:
+    df = load_jobs()
+except Exception as exc:
+    show_database_error(exc)
+    st.stop()
+
+if df.empty:
+    st.info("No data is available yet.")
+    st.stop()
+
+skill_columns = {
+    "Python": "skills_python",
+    "SQL": "skills_sql",
+    "Machine Learning": "skills_ml",
+    "Deep Learning": "skills_deep_learning",
+    "Cloud": "skills_cloud",
 }
-
-skills_df = pd.DataFrame(
-    list(skills.items()),
-    columns=["Skill", "Demand"]
-)
+skills = {
+    skill: df[column].fillna(0).sum()
+    for skill, column in skill_columns.items()
+    if column in df.columns
+}
+skills_df = pd.DataFrame(list(skills.items()), columns=["Skill", "Demand"])
 
 fig = px.bar(
     skills_df,
     x="Skill",
     y="Demand",
-    title="Skill Demand"
+    title="Skill Demand in the Selected Dataset",
 )
-
-st.plotly_chart(fig)
+st.plotly_chart(fig, use_container_width=True)
