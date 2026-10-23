@@ -1,12 +1,16 @@
+# Python
 __pycache__/
-*.pyc
-
+*.py[cod]
 venv/
-.env
+.venv/
 
+# Local secrets and Streamlit settings
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Editors and OS
 .idea/
 .vscode/
-
-.streamlit/
-
 .DS_Store
