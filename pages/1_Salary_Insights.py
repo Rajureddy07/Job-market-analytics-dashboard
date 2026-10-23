@@ -1,26 +1,23 @@
-# pages/1_Salary_Insights.py
-
 import streamlit as st
-import pandas as pd
-import psycopg2
 import plotly.express as px
 
-connection = psycopg2.connect(
-    host="localhost",
-    database="job_market_db",
-    user="postgres",
-    password="DB_Password" #Your DB password
-)
+from database import load_jobs, show_database_error
 
-df = pd.read_sql(
-    "SELECT * FROM jobs",
-    connection
-)
-
+st.set_page_config(page_title="Salary Insights", page_icon="💰", layout="wide")
 st.title("Salary Insights")
 
+try:
+    df = load_jobs()
+except Exception as exc:
+    show_database_error(exc)
+    st.stop()
+
+if df.empty:
+    st.info("No data is available yet.")
+    st.stop()
+
 salary_role = (
-    df.groupby("job_title")["salary"]
+    df.groupby("job_title", dropna=True)["salary"]
     .mean()
     .sort_values(ascending=False)
     .head(15)
@@ -29,9 +26,11 @@ salary_role = (
 
 fig = px.bar(
     salary_role,
-    x="job_title",
-    y="salary",
-    title="Highest Paying Roles"
+    x="salary",
+    y="job_title",
+    orientation="h",
+    title="Highest-Paying Roles by Average Listed Salary",
+    labels={"salary": "Average salary", "job_title": "Job role"},
 )
-
-st.plotly_chart(fig)
+st.plotly_chart(fig, use_container_width=True)
+st.caption("Salary patterns reflect the source dataset and are not a guarantee of market compensation.")
