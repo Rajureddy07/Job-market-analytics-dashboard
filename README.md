@@ -1,5 +1,7 @@
 # Job Market Analytics Dashboard
 
+[![Python syntax](https://github.com/Rajureddy07/Job-market-analytics-dashboard/actions/workflows/syntax.yml/badge.svg)](https://github.com/Rajureddy07/Job-market-analytics-dashboard/actions/workflows/syntax.yml)
+
 An interactive analytics application for exploring job-market data across roles, salaries, skills, industries, experience levels, countries, and hiring trends.
 
 > **Project type:** Portfolio / analytics project. Results depend on the dataset you load and should not be treated as live labor-market forecasts.
